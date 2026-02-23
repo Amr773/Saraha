@@ -1,0 +1,16 @@
+{
+  "main": "./src/main.js",
+  "license": "ISC",
+  "scripts": {
+    "dev": "node --watch ./src/main.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "crypto-js": "^4.2.0",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.2.1"
+  }
+}
