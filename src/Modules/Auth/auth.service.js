@@ -1,4 +1,3 @@
-import { compare, hash } from "bcrypt";
 import CryptoJS from "crypto-js";
 import {
   conflictException,
@@ -6,15 +5,10 @@ import {
 } from "../../Common/Response/response.js";
 import UserModel from "../../DB/Models/User.js";
 import * as dbRepo from "../../DB/db.respostory.js";
-import {
-  ENCRYPTION_KEY,
-  SALT_ROUND,
-  TOKEN_SIGNATURE_ADMIN,
-  TOKEN_SIGNATURE_USER,
-} from "../../../config/config.service.js";
+import { ENCRYPTION_KEY, SALT_ROUND } from "../../../config/config.service.js";
 import { compareOperation, hashOperation } from "../../Common/Security/hash.js";
-import jwt from "jsonwebtoken";
-import { RoleEnum } from "../../Common/Enums/user.enums.js";
+import { TokenType } from "../../Common/Enums/token.enum.js";
+import { generateToken, getSignature } from "../../Common/Security/token.js";
 
 export async function signup(bodyData) {
   const { email } = bodyData;
@@ -61,27 +55,29 @@ export async function login(bodyData, url) {
     return notFoundException("invalid info");
   }
 
-  let signature = "";
-  switch (user.role) {
-    case RoleEnum.User:
-      signature = TOKEN_SIGNATURE_USER;
-      break;
-
-    case RoleEnum.Admin:
-      signature = TOKEN_SIGNATURE_ADMIN;
-      break;
-  }
-
   const bytes = CryptoJS.AES.decrypt(user.phone, ENCRYPTION_KEY);
   const originalPhone = bytes.toString(CryptoJS.enc.Utf8);
 
   user.phone = originalPhone;
+  const { accessSignature, refreshSignature } = getSignature(user.role);
 
-  const acess_token = jwt.sign({ sub: user._id }, signature, {
-    expiresIn: 60 * 60,
-    issuer: url,
-    audience: user.role,
+  const access_token = generateToken({
+    signature: accessSignature,
+    options: {
+      audience: [user.role, TokenType.access],
+      expiresIn: 60 * 15,
+      subject: user._id.toString(),
+    },
   });
 
-  return acess_token;
+  const refresh_token = generateToken({
+    signature: refreshSignature,
+    options: {
+      audience: [user.role, TokenType.refresh],
+      expiresIn: "1y",
+      subject: user._id.toString(),
+    },
+  });
+
+  return { access_token, refresh_token };
 }

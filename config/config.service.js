@@ -16,3 +16,7 @@ export const SALT_ROUND = parseInt(process.env.SALT_ROUND) || 10;
 export const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 export const TOKEN_SIGNATURE_USER = process.env.TOKEN_SIGNATURE_USER;
 export const TOKEN_SIGNATURE_ADMIN = process.env.TOKEN_SIGNATURE_ADMIN;
+export const TOKEN_SIGNATURE_USER_REFRESH =
+  process.env.TOKEN_SIGNATURE_USER_REFRESH;
+export const TOKEN_SIGNATURE_ADMIN_REFRESH =
+  process.env.TOKEN_SIGNATURE_ADMIN_REFRESH;

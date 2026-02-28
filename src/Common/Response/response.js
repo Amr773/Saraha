@@ -24,3 +24,7 @@ export function badRequestException(msg) {
 export function conflictException(msg) {
   throw new Error(msg, { cause: { statusCode: 409 } });
 }
+
+export function unAuthorizedException(msg) {
+  throw new Error(msg, { cause: { statusCode: 401 } });
+}

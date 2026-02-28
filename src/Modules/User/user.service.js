@@ -1,25 +1,17 @@
-import {
-  TOKEN_SIGNATURE_ADMIN,
-  TOKEN_SIGNATURE_USER,
-} from "../../../config/config.service.js";
-import { RoleEnum } from "../../Common/Enums/user.enums.js";
-import * as dbRepo from "../../DB/db.respostory.js";
-import UserModel from "../../DB/Models/User.js";
-import jwt from "jsonwebtoken";
+import { TokenType } from "../../Common/Enums/token.enum.js";
+import { generateToken, getSignature } from "../../Common/Security/token.js";
 
-export async function getUserProfile(token) {
-  const decodedToken = jwt.decode(token);
-  let signature = "";
-  switch (decodedToken.aud) {
-    case RoleEnum.User:
-      signature = TOKEN_SIGNATURE_USER;
-      break;
+export async function renewToken(userData) {
+  const { accessSignature } = getSignature(userData.role);
 
-    case RoleEnum.Admin:
-      signature = TOKEN_SIGNATURE_ADMIN;
-      break;
-  }
-  const verfiedToken = jwt.verify(token, signature);
-  //   const user = await dbRepo.findById({ model: UserModel, id: userId });
-  //   return user;
+  const newAccessToken = generateToken({
+    signature: accessSignature,
+    options: {
+      audience: [userData.role, TokenType.access],
+      expiresIn: 60 * 15,
+      subject: userData._id.toString(),
+    },
+  });
+
+  return newAccessToken;
 }
