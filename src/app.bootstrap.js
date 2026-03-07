@@ -6,13 +6,14 @@ import { PORT } from "../config/config.service.js";
 import { globalErrHandling } from "./Common/Response/response.js";
 import authRouter from "./Modules/Auth/auth.controller.js";
 import userRouter from "./Modules/User/user.controller.js";
+import cors from "cors"
 
 async function bootstrap() {
   const app = express();
   const port = PORT;
   await testDBconnection();
 
-  app.use(express.json());
+  app.use(express.json(),cors());
   app.use("/auth", authRouter);
   app.use("/user", userRouter);
 

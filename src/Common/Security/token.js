@@ -4,6 +4,7 @@ import {
   TOKEN_SIGNATURE_USER,
   TOKEN_SIGNATURE_USER_REFRESH,
 } from "../../../config/config.service.js";
+import { TokenType } from "../Enums/token.enum.js";
 import { RoleEnum } from "../Enums/user.enums.js";
 import jwt from "jsonwebtoken";
 
@@ -35,4 +36,28 @@ export function verifyToken({ token, signature }) {
 
 export function decodeToken(token) {
   return jwt.decode(token);
+}
+
+export function generateAccAndRefTokens(user) {
+  const { accessSignature, refreshSignature } = getSignature(user.role);
+
+  const access_token = generateToken({
+    signature: accessSignature,
+    options: {
+      audience: [user.role, TokenType.access],
+      expiresIn: 60 * 15,
+      subject: user._id.toString(),
+    },
+  });
+
+  const refresh_token = generateToken({
+    signature: refreshSignature,
+    options: {
+      audience: [user.role, TokenType.refresh],
+      expiresIn: "1y",
+      subject: user._id.toString(),
+    },
+  });
+
+  return { access_token, refresh_token };
 }
