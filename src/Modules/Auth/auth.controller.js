@@ -6,18 +6,19 @@ import {
   signupGmail,
   veriftOtp,
 } from "./auth.service.js";
-import {
-  badRequestException,
-  sucessResponse,
-} from "../../Common/Response/response.js";
-import { GenderEnum } from "../../Common/Enums/user.enums.js";
+import { sucessResponse } from "../../Common/Response/response.js";
 import { validation } from "../../Middleware/validation.middleware.js";
 import { loginSchema, signupSchema } from "./auth.validation.js";
+import {
+  allowedFileFormats,
+  localUpload,
+} from "../../Common/Multer/multer.config.js";
 
 const authRouter = express.Router();
 
 authRouter.post("/signup", validation(signupSchema), async (req, res) => {
-  const result = await signup(req.body);
+  const result = await signup(req.vbody);
+  console.log(req.file);
   return sucessResponse({ res, statusCode: 201, data: result });
 });
 

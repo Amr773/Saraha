@@ -53,6 +53,7 @@ const userSchema = new Schema(
       default: ProviderEnum.System,
     },
     profilePic: String,
+    coverPic: [String],
   },
   {
     timestamps: true,

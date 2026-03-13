@@ -17,6 +17,7 @@ import { OAuth2Client } from "google-auth-library";
 import { ProviderEnum } from "../../Common/Enums/user.enums.js";
 import { generateOTP } from "../../Common/Security/otp.js";
 import OtpModel from "../../DB/Models/OtpModel.js";
+import { encryptValue } from "../../Common/Security/encrypt.js";
 
 export async function signup(bodyData) {
   const { email } = bodyData;
@@ -34,10 +35,9 @@ export async function signup(bodyData) {
     rounds: SALT_ROUND,
   });
 
-  bodyData.phone = CryptoJS.AES.encrypt(
-    bodyData.phone,
-    ENCRYPTION_KEY,
-  ).toString();
+  if (bodyData.phone) {
+    bodyData.phone = encryptValue({ value: bodyData.phone });
+  }
 
   const result = await dbRepo.create({
     model: UserModel,

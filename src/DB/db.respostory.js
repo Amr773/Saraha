@@ -41,3 +41,8 @@ export async function create({ model, insertedData, options = {} }) {
   const [result] = await model.create([insertedData], options);
   return result;
 }
+
+export async function updateOne({ model, filter, data, options }) {
+  const result = await model.updateOne(filter, data, options);
+  return result;
+}
