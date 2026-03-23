@@ -7,6 +7,7 @@ import {
 import { TokenType } from "../Enums/token.enum.js";
 import { RoleEnum } from "../Enums/user.enums.js";
 import jwt from "jsonwebtoken";
+import { randomUUID } from "crypto";
 
 export function getSignature(role = RoleEnum.User) {
   let refreshSignature = "";
@@ -41,12 +42,15 @@ export function decodeToken(token) {
 export function generateAccAndRefTokens(user) {
   const { accessSignature, refreshSignature } = getSignature(user.role);
 
+  const tokenId = randomUUID();
+
   const access_token = generateToken({
     signature: accessSignature,
     options: {
       audience: [user.role, TokenType.access],
       expiresIn: 60 * 15,
       subject: user._id.toString(),
+      jwtid: tokenId,
     },
   });
 
@@ -56,6 +60,7 @@ export function generateAccAndRefTokens(user) {
       audience: [user.role, TokenType.refresh],
       expiresIn: "1y",
       subject: user._id.toString(),
+      jwtid: tokenId,
     },
   });
 

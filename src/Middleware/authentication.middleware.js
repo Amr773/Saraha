@@ -10,6 +10,7 @@ import {
 import * as dbRepo from "../DB/db.respostory.js";
 import { TokenType } from "../Common/Enums/token.enum.js";
 import UserModel from "../DB/Models/User.js";
+import * as redisMethods from "../DB/redis.service.js";
 
 export function authentication(tokenTypeParam = TokenType.access) {
   return async (req, res, next) => {
@@ -36,6 +37,18 @@ export function authentication(tokenTypeParam = TokenType.access) {
       signature:
         tokenTypeParam == TokenType.access ? accessSignature : refreshSignature,
     });
+
+    if (
+      await redisMethods.get(
+        redisMethods.blackListTokenKey({
+          userId: verfiedToken.sub,
+          tokenId: verfiedToken.jti,
+        }),
+      )
+    ) {
+      return unAuthorizedException("Please Login Again");
+    }
+
     const user = await dbRepo.findById({
       model: UserModel,
       id: verfiedToken.sub,
@@ -45,7 +58,12 @@ export function authentication(tokenTypeParam = TokenType.access) {
       return unAuthorizedException("Account not found or login time run out");
     }
 
+    if (verfiedToken.iat * 1000 < user.changeCreditTime) {
+      return unAuthorizedException("Please Login Again");
+    }
+
     req.user = user;
+    req.tokenPayload = verfiedToken;
 
     next();
   };

@@ -54,6 +54,11 @@ const userSchema = new Schema(
     },
     profilePic: String,
     coverPic: [String],
+    changeCreditTime: Date,
+    visitCount: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

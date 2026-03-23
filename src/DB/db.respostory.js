@@ -46,3 +46,26 @@ export async function updateOne({ model, filter, data, options }) {
   const result = await model.updateOne(filter, data, options);
   return result;
 }
+
+export async function findByIdAndUpdate({
+  model,
+  id,
+  data,
+  options = {},
+  select = "",
+  populate = false,
+  populateField = "",
+}) {
+  let result;
+
+  if (populate) {
+    result = await model
+      .findByIdAndUpdate(id, data, options)
+      .select(select)
+      .populate(populateField);
+  } else {
+    result = await model.findByIdAndUpdate(id, data, options).select(select);
+  }
+
+  return result;
+}

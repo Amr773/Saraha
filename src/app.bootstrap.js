@@ -8,11 +8,14 @@ import authRouter from "./Modules/Auth/auth.controller.js";
 import userRouter from "./Modules/User/user.controller.js";
 import cors from "cors";
 import path from "node:path";
+import { testRedisConnection } from "./DB/redis.connection.js";
 
 async function bootstrap() {
   const app = express();
   const port = PORT;
   await testDBconnection();
+  await testRedisConnection();
+
 
   app.use("/uploads", express.static(path.resolve("./uploads")));
 
@@ -22,7 +25,7 @@ async function bootstrap() {
 
   app.use(globalErrHandling);
 
-  app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+  app.listen(port, () => console.log(`Server listening on port ${port}!`));
 }
 
 export default bootstrap;

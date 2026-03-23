@@ -3,6 +3,8 @@ import { sucessResponse } from "../../Common/Response/response.js";
 import {
   coverProfileePic,
   getAnotherProfile,
+  deleteProfilePic,
+  logOut,
   renewToken,
   uploadProfilePic,
 } from "./user.service.js";
@@ -73,9 +75,31 @@ userRouter.get(
   "/share-profile/:profileId",
   validation(getAnotherUserProfileSchema),
   async (req, res) => {
+    let requesterRole = null;
     const result = await getAnotherProfile(req.params.profileId);
+    if (requesterRole !== RoleEnum.Admin) {
+      result.visitCount = undefined;
+    }
     return sucessResponse({ res, statusCode: 201, data: result });
   },
 );
 
+userRouter.post("/logout", authentication(), async (req, res) => {
+  const result = await logOut(
+    req.user._id,
+    req.tokenPayload,
+    req.body.logoutOption,
+  );
+  return sucessResponse({ res, data: result });
+});
+
+userRouter.delete(
+  "/profile-pic",
+  authentication(TokenType.access),
+  authorization([RoleEnum.User]),
+  async (req, res) => {
+    const result = await deleteProfilePic(req.user._id);
+    return sucessResponse({ res, statusCode: 200, data: result });
+  },
+);
 export default userRouter;
