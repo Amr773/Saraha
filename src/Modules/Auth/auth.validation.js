@@ -28,3 +28,62 @@ export const signupSchema = {
     })
     .required(),
 };
+
+export const confirmEmailSchema = {
+  body: joi
+    .object()
+    .keys({
+      email: CommonFieldValidation.email.required(),
+      otp: CommonFieldValidation.OTP.required(),
+    })
+    .required(),
+};
+
+export const resendOTPConfirmEmailSchema = {
+  body: joi
+    .object()
+    .keys({
+      email: CommonFieldValidation.email.required(),
+    })
+    .required(),
+};
+
+export const sendOTPForgetPasswordSchema = {
+  body: joi
+    .object()
+    .keys({
+      email: CommonFieldValidation.email.required(),
+    })
+    .required(),
+};
+
+export const verfiyOTPForgetPasswordSchema = {
+  body: joi
+    .object()
+    .keys({
+      email: CommonFieldValidation.email.required(),
+      otp: CommonFieldValidation.OTP.required(),
+    })
+    .required(),
+};
+
+export const resetPasswordSchema = {
+  body: joi
+    .object()
+    .keys({
+      email: CommonFieldValidation.email.required(),
+      otp: CommonFieldValidation.OTP.required(),
+      password: CommonFieldValidation.password.required(),
+    })
+    .required(),
+};
+
+export const loginConfirmSchema = {
+  body: joi
+    .object()
+    .keys({
+      email: CommonFieldValidation.email.required(),
+      otp: CommonFieldValidation.OTP.required(),
+    })
+    .required(),
+};

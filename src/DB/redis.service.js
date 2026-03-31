@@ -6,6 +6,10 @@ export async function set({ key, value, exType = "EX", exValue = 120 }) {
   });
 }
 
+export async function incr(key) {
+  return await client.incr(key);
+}
+
 export async function get(key) {
   return await client.get(key);
 }
@@ -41,3 +45,25 @@ export async function update(key, value) {
 export function blackListTokenKey({ userId, tokenId }) {
   return `blackListToken::${userId}::${tokenId}`;
 }
+
+export function getOTPKey({ email, emailType }) {
+  return `OTP::${email}::${emailType}`;
+}
+
+export function getOTPReqNoKey({ email, emailType }) {
+  return `OTP::${email}::${emailType}::No`;
+}
+
+export function getOTPBlockedKey({ email, emailType }) {
+  return `OTP::${email}::${emailType}::Blocked`;
+}
+
+export function getOTPBlockedKeyTimeout({ email, emailType }) {
+  return `OTP::${email}::${emailType}::BlockedNo`;
+}
+
+export const getLoginAttemptsKey = ({ email }) => `loginAttempts:${email}`;
+
+export const getLoginBlockedKey = ({ email }) => `loginBlocked:${email}`;
+
+export const getTwoFALoginKey = ({ email }) => `twoFALogin:${email}`;

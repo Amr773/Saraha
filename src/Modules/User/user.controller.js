@@ -7,6 +7,9 @@ import {
   logOut,
   renewToken,
   uploadProfilePic,
+  updatePassword,
+  confirmEnable2FA,
+  requestEnable2FA,
 } from "./user.service.js";
 import { authentication } from "../../Middleware/authentication.middleware.js";
 import { TokenType } from "../../Common/Enums/token.enum.js";
@@ -21,6 +24,7 @@ import {
   coverPicSchema,
   getAnotherUserProfileSchema,
   profilPicSchema,
+  updatePasswordSchema,
 } from "./user.validation.js";
 
 const userRouter = express.Router();
@@ -102,4 +106,39 @@ userRouter.delete(
     return sucessResponse({ res, statusCode: 200, data: result });
   },
 );
+
+userRouter.patch(
+  "/update-password",
+  authentication(),
+  validation(updatePasswordSchema),
+  async (req, res) => {
+    await updatePassword(req.vbody, req.user);
+    return sucessResponse({ res, data: "done" });
+  },
+);
+
+userRouter.post(
+  "/2fa/enable",
+  authentication(TokenType.access),
+  authorization([RoleEnum.User]),
+  async (req, res) => {
+    await requestEnable2FA(req.user);
+    return sucessResponse({ res, statusCode: 200, data: "check your inbox" });
+  },
+);
+
+userRouter.post(
+  "/2fa/confirm",
+  authentication(TokenType.access),
+  authorization([RoleEnum.User]),
+  async (req, res) => {
+    await confirmEnable2FA(req.user, req.body.otp);
+    return sucessResponse({
+      res,
+      statusCode: 200,
+      data: "2-step verification enabled",
+    });
+  },
+);
+
 export default userRouter;

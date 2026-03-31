@@ -4,8 +4,13 @@ const messageSchema = new Schema(
   {
     content: {
       type: String,
-      required: true,
+      required: function () {
+        return !this.attachments.length;
+      },
     },
+
+    attachments: [String],
+
     sendId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -14,7 +19,7 @@ const messageSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-    },
+    }
   },
   {
     timestamps: true,

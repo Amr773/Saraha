@@ -31,11 +31,12 @@ export const CommonFieldValidation = {
   userName: joi
     .string()
     .pattern(new RegExp(/^[A-Z]{1}[a-z]{1,24}\s[A-Z]{1}[a-z]{1,24}$/)),
-  email: joi
-    .string()
-    .pattern(
-      new RegExp(/^\w{3,25}@(gmail|yahoo|outlook|icloud)(.com|.net|.co|.eg)$/),
-    ),
+  // email: joi
+  //   .string()
+  //   .pattern(
+  //     new RegExp(/^\w{3,25}@(gmail|yahoo|outlook|icloud)(.com|.net|.co|.eg)$/),
+  //   ),
+  email: joi.string().trim().required(),
   phone: joi.string().pattern(new RegExp(/^(\+201|00201|01)(0|1|2|5)\d{8}$/)),
   password: joi
     .string()
@@ -44,8 +45,9 @@ export const CommonFieldValidation = {
     ),
   DOB: joi.date(),
   gender: joi.string().valid(...Object.values(GenderEnum)),
+  // OTP: joi.number().min(6).max(6),
+  OTP: joi.string().pattern(new RegExp(/\d{6}/)),
 };
-
 
 export function validateObjectId(value, helpers) {
   if (!Types.ObjectId.isValid(value)) {

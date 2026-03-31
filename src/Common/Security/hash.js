@@ -5,9 +5,6 @@ export async function hashOperation({ plainText, rounds = SALT_ROUND }) {
   return await hash(plainText, rounds);
 }
 
-export async function compareOperation({
-  plainValue,
-  hashedValue,
-}) {
+export async function compareOperation({ plainValue, hashedValue }) {
   return await compare(plainValue, hashedValue);
 }

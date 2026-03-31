@@ -59,6 +59,10 @@ const userSchema = new Schema(
       type: Number,
       default: 0,
     },
+    twoStepVerification: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

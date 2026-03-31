@@ -6,6 +6,10 @@ import * as redisMethods from "../../DB/redis.service.js";
 import UserModel from "../../DB/Models/User.js";
 import path from "node:path";
 import { unlink } from "node:fs/promises";
+import { compareOperation, hashOperation } from "../../Common/Security/hash.js";
+import { badRequestException } from "../../Common/Response/response.js";
+import { EmailEnum } from "../../Common/Enums/email.enum";
+import { sendEmailOtp } from "../Auth/auth.service.js";
 
 export async function renewToken(userData) {
   const { accessSignature } = getSignature(userData.role);
@@ -98,5 +102,68 @@ export async function deleteProfilePic(userID) {
     model: UserModel,
     filter: { _id: userID },
     data: { profilePic: null },
+  });
+}
+
+export async function updatePassword(bodyData, userData) {
+  const { newPassword, oldPassword } = bodyData;
+  const { password } = userData;
+
+  const isOldPasswordValid = await compareOperation({
+    plainValue: oldPassword,
+    hashedValue: password,
+  });
+
+  if (!isOldPasswordValid) {
+    return badRequestException("Invalid Password");
+  }
+
+  await dbRepo.updateOne({
+    model: UserModel,
+    filter: { _id: userData._id },
+    data: {
+      password: await hashOperation({ plainText: newPassword }),
+      changeCreditTime: new Date(),
+    },
+  });
+}
+
+export async function requestEnable2FA(user) {
+  if (user.twoStepVerification) {
+    return badRequestException("2-step verification is already enabled");
+  }
+
+  await sendEmailOtp({
+    email: user.email,
+    emailType: EmailEnum.twoStepVerification,
+    subject: "Enable 2-Step Verification",
+  });
+}
+
+export async function confirmEnable2FA(user, otp) {
+  const storedOtp = await redisMethods.get(
+    redisMethods.getOTPKey({
+      email: user.email,
+      emailType: EmailEnum.twoStepVerification,
+    }),
+  );
+
+  if (!storedOtp) {
+    return badRequestException("OTP expired");
+  }
+
+  const isOtpValid = await compareOperation({
+    plainValue: otp,
+    hashedValue: storedOtp,
+  });
+
+  if (!isOtpValid) {
+    return badRequestException("OTP is invalid");
+  }
+
+  await dbRepo.updateOne({
+    model: UserModel,
+    filter: { _id: user._id },
+    data: { twoStepVerification: true },
   });
 }

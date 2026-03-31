@@ -17,6 +17,8 @@ export const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 export const TOKEN_SIGNATURE_USER = process.env.TOKEN_SIGNATURE_USER;
 export const TOKEN_SIGNATURE_ADMIN = process.env.TOKEN_SIGNATURE_ADMIN;
 export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+export const MAIL_USER = process.env.MAIL_USER;
+export const MAIL_PASS = process.env.MAIL_PASS;
 export const REDIS_URL = process.env.REDIS_URL;
 export const TOKEN_SIGNATURE_USER_REFRESH =
   process.env.TOKEN_SIGNATURE_USER_REFRESH;
