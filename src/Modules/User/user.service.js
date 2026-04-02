@@ -8,7 +8,7 @@ import path from "node:path";
 import { unlink } from "node:fs/promises";
 import { compareOperation, hashOperation } from "../../Common/Security/hash.js";
 import { badRequestException } from "../../Common/Response/response.js";
-import { EmailEnum } from "../../Common/Enums/email.enum";
+import { EmailEnum } from "../../Common/Enums/email.enum.js";
 import { sendEmailOtp } from "../Auth/auth.service.js";
 
 export async function renewToken(userData) {
