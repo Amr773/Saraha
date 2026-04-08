@@ -9,7 +9,9 @@ export async function set({ key, value, exType = "EX", exValue = 120 }) {
 export async function incr(key) {
   return await client.incr(key);
 }
-
+export async function decr(key) {
+  return await client.decr(key);
+}
 export async function get(key) {
   return await client.get(key);
 }
@@ -67,3 +69,7 @@ export const getLoginAttemptsKey = ({ email }) => `loginAttempts:${email}`;
 export const getLoginBlockedKey = ({ email }) => `loginBlocked:${email}`;
 
 export const getTwoFALoginKey = ({ email }) => `twoFALogin:${email}`;
+
+export async function setExpire(key, seconds) {
+  return await client.expire(key, Math.floor(seconds));
+}

@@ -19,6 +19,24 @@ export async function findOne({
   return result;
 }
 
+export async function find({
+  model,
+  filters = {},
+  select = "",
+  populate = false,
+  populateField = "",
+}) {
+  let result;
+
+  if (populate) {
+    result = await model.find(filters).select(select).populate(populateField);
+  } else {
+    result = await model.find(filters).select(select);
+  }
+
+  return result;
+}
+
 export async function findById({
   model,
   id,
@@ -44,6 +62,11 @@ export async function create({ model, insertedData, options = {} }) {
 
 export async function updateOne({ model, filter, data, options }) {
   const result = await model.updateOne(filter, data, options);
+  return result;
+}
+
+export async function deleteOne({ model, filter, options }) {
+  const result = await model.deleteOne(filter, options);
   return result;
 }
 

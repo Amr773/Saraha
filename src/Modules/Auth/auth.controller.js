@@ -91,8 +91,7 @@ authRouter.post("/signup/gmail", async (req, res) => {
 });
 
 authRouter.post("/login", validation(loginSchema), async (req, res) => {
-  console.log("dasdaa");
-
+  
   const result = await login(req.body, `${req.protocol}://${req.host}`);
   return sucessResponse({ res, statusCode: 201, data: result });
 });

@@ -11,7 +11,7 @@ const messageSchema = new Schema(
 
     attachments: [String],
 
-    sendId: {
+    senderId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
@@ -19,7 +19,7 @@ const messageSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-    }
+    },
   },
   {
     timestamps: true,
@@ -28,6 +28,6 @@ const messageSchema = new Schema(
   },
 );
 
-const MessageModel = mongoose.model("User", messageSchema);
+const MessageModel = mongoose.model("Message", messageSchema);
 
 export default MessageModel;

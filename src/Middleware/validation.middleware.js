@@ -47,6 +47,7 @@ export const CommonFieldValidation = {
   gender: joi.string().valid(...Object.values(GenderEnum)),
   // OTP: joi.number().min(6).max(6),
   OTP: joi.string().pattern(new RegExp(/\d{6}/)),
+  id: joi.string().custom(validateObjectId),
 };
 
 export function validateObjectId(value, helpers) {
