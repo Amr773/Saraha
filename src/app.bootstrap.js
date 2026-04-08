@@ -66,6 +66,8 @@ async function bootstrap() {
   app.use(globalErrHandling);
 
   app.listen(port, () => console.log(`Server listening on port ${port}!`));
+
+  return app
 }
 
 export default bootstrap;
